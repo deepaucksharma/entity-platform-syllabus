@@ -1,7 +1,5 @@
 # 📚 The Complete Guide to Kafka Entity Definitions in New Relic's Entity Platform
 
-<div align="center">
-
 ![Kafka](https://img.shields.io/badge/Apache%20Kafka-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white)
 ![New Relic](https://img.shields.io/badge/New%20Relic-008C99?style=for-the-badge&logo=new-relic&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge)
@@ -10,7 +8,6 @@
 
 [🚀 Quick Start](#quick-start) • [📖 Documentation](#introduction) • [🔧 Examples](KAFKA_ENTITY_VISUAL_EXAMPLES_AND_WALKTHROUGHS.md) • [❓ FAQ](#faq)
 
-</div>
 
 ---
 
@@ -48,13 +45,10 @@
 </tr>
 </table>
 
-<div align="center">
-
 ### 🔍 Quick Links
 
 [Troubleshooting](#troubleshooting) • [Glossary](#glossary) • [Examples](KAFKA_ENTITY_VISUAL_EXAMPLES_AND_WALKTHROUGHS.md) • [API Reference](#api-reference)
 
-</div>
 
 ---
 
@@ -104,8 +98,8 @@ make deploy ACCOUNT_ID=<your-account>
 
 ## 1. Introduction: Understanding the Big Picture {#introduction}
 
-<div style="background-color: #e6f3ff; border-radius: 8px; padding: 20px; margin: 20px 0;">
-
+> **ℹ️ Info**
+> 
 ### 🎯 The Problem This Solves
 
 Apache Kafka monitoring traditionally suffers from:
@@ -127,7 +121,6 @@ Provider-Specific  →           Unified Multi-Provider Support
 Static Dashboards  →           Dynamic Entity-Aware Dashboards
 ```
 
-</div>
 
 ### 🎨 Visual Overview
 
@@ -157,8 +150,8 @@ graph TB
 
 ## 2. Entity Platform Fundamentals {#entity-platform-fundamentals}
 
-<div style="background-color: #f8f9fa; border-left: 4px solid #0078d4; padding: 15px; margin: 20px 0;">
-
+> **💡 Key Concept**
+> 
 ### 🧠 What is an Entity?
 
 An **entity** is an intelligent representation of a monitored component that includes:
@@ -172,7 +165,6 @@ An **entity** is an intelligent representation of a monitored component that inc
 | **Relationships** | Connections to other entities | Cluster → Brokers → Topics |
 | **Health** | Calculated status | Healthy, Warning, Critical |
 
-</div>
 
 ### 🔄 The Entity Lifecycle
 
@@ -222,8 +214,8 @@ Continuous updates
 
 ### 🏗️ Architecture Overview
 
-<div style="background-color: #fff5f5; border-radius: 8px; padding: 20px; margin: 20px 0;">
-
+> **📋 Overview**
+> 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                     Entity Platform Core                      │
@@ -237,7 +229,6 @@ Continuous updates
 └─────────────────┴─────────────────┴─────────────────────────┘
 ```
 
-</div>
 
 ### 📊 Key Components Explained
 
@@ -320,8 +311,6 @@ rules:
 
 ### 🎯 Entity Types Overview
 
-<div align="center">
-
 ```mermaid
 graph TD
     A[MESSAGE_QUEUE_CLUSTER] --> B[MESSAGE_QUEUE_BROKER]
@@ -340,7 +329,6 @@ graph TD
     style G fill:#e0f2f1,stroke:#004d40
 ```
 
-</div>
 
 ### 📋 Entity Type Details
 
@@ -465,8 +453,8 @@ graph TD
 
 ### 🔬 How Synthesis Works
 
-<div style="background-color: #f0f8ff; border-radius: 8px; padding: 20px; margin: 20px 0;">
-
+> **🔍 Details**
+> 
 ```mermaid
 sequenceDiagram
     participant T as Telemetry
@@ -483,7 +471,6 @@ sequenceDiagram
     R->>E: Create Relationships
 ```
 
-</div>
 
 ### 📝 Synthesis Rule Anatomy
 
@@ -528,10 +515,8 @@ synthesis:
 
 ### 🌐 Multi-Provider Synthesis
 
-<div style="display: flex; gap: 20px; margin: 20px 0;">
-
-<div style="flex: 1; background-color: #e8f5e9; padding: 15px; border-radius: 8px;">
-
+> **✅ Success**
+> 
 #### Self-Managed
 
 ```yaml
@@ -543,10 +528,9 @@ tags:
     value: SELF_MANAGED
 ```
 
-</div>
 
-<div style="flex: 1; background-color: #fff3e0; padding: 15px; border-radius: 8px;">
-
+> **⚠️ Important**
+> 
 #### AWS MSK
 
 ```yaml
@@ -558,10 +542,9 @@ tags:
     value: AWS_MSK
 ```
 
-</div>
 
-<div style="flex: 1; background-color: #e3f2fd; padding: 15px; border-radius: 8px;">
-
+> **📘 Note**
+> 
 #### Confluent Cloud
 
 ```yaml
@@ -573,9 +556,7 @@ tags:
     value: CONFLUENT_CLOUD
 ```
 
-</div>
 
-</div>
 
 ---
 
@@ -583,15 +564,14 @@ tags:
 
 ### 📊 Golden Metrics Overview
 
-<div style="background-color: #fffbf0; border-radius: 8px; padding: 20px; margin: 20px 0;">
+> **📊 Metrics**
+> 
+> **Golden Metrics** are the most important measurements for each entity type. They:
+> - ✅ Appear prominently in the UI
+> - ✅ Drive dashboard visualizations
+> - ✅ Enable smart alerting
+> - ✅ Support multi-provider queries
 
-**Golden Metrics** are the most important measurements for each entity type. They:
-- ✅ Appear prominently in the UI
-- ✅ Drive dashboard visualizations
-- ✅ Enable smart alerting
-- ✅ Support multi-provider queries
-
-</div>
 
 ### 🎯 Key Metrics by Entity Type
 
@@ -720,8 +700,6 @@ throughputInBytesPerSec:
 
 ### 🔗 Relationship Types
 
-<div align="center">
-
 ```mermaid
 graph LR
     subgraph "Structural Relationships (24h TTL)"
@@ -742,7 +720,6 @@ graph LR
     style F fill:#fce4ec
 ```
 
-</div>
 
 ### 📋 Relationship Details
 
@@ -793,8 +770,8 @@ graph LR
 
 ### 🚀 APM Integration
 
-<div style="background-color: #f5f5f5; border-radius: 8px; padding: 20px; margin: 20px 0;">
-
+> **📝 Summary**
+> 
 ```yaml
 # Automatic discovery from OpenTelemetry spans
 - name: applicationProducesToTopic
@@ -821,7 +798,6 @@ This enables:
 - 🔍 End-to-end transaction tracing
 - 📊 Impact analysis when issues occur
 
-</div>
 
 ---
 
@@ -962,14 +938,13 @@ clusterLoadPercent:
 
 ### 📊 Dashboard Architecture
 
-<div style="background-color: #f0f9ff; border-radius: 8px; padding: 20px; margin: 20px 0;">
+> **🏗️ Architecture**
+> 
+> Each entity type can have a multi-page dashboard with:
+> - **Overview Page**: Health status and key metrics
+> - **Performance Page**: Detailed performance analysis
+> - **Relationships Page**: Connected entities and data flow
 
-Each entity type can have a multi-page dashboard with:
-- **Overview Page**: Health status and key metrics
-- **Performance Page**: Detailed performance analysis
-- **Relationships Page**: Connected entities and data flow
-
-</div>
 
 ### 🎨 Widget Gallery
 
@@ -1063,9 +1038,9 @@ Dashboards use entity context:
 
 ### 🧪 Testing Framework
 
-<div style="background-color: #e8f5e9; border-radius: 8px; padding: 20px; margin: 20px 0;">
-
-Each entity type includes comprehensive test data:
+> **✅ Success**
+> 
+> Each entity type includes comprehensive test data:
 
 ```
 entity-types/message-queue-cluster/tests/
@@ -1075,7 +1050,6 @@ entity-types/message-queue-cluster/tests/
 └── confluent-cloud.json     # Confluent Cloud test
 ```
 
-</div>
 
 ### ✅ Validation Checklist
 
@@ -1200,20 +1174,19 @@ integration.type:
 
 ### 📈 Performance Optimization
 
-<div style="background-color: #fff5f5; border-radius: 8px; padding: 20px; margin: 20px 0;">
-
-**Query Optimization Tips:**
-- Use `latest()` for status metrics
-- Pre-filter with WHERE before aggregation
-- Limit facet cardinality with LIMIT
-- Use eventId for deduplication
+> **📋 Overview**
+> 
+> **Query Optimization Tips:**
+> - Use `latest()` for status metrics
+> - Pre-filter with WHERE before aggregation
+> - Limit facet cardinality with LIMIT
+> - Use eventId for deduplication
 
 **Entity Volume Management:**
 - Set appropriate TTLs for cardinality
 - Use `alertable: false` for partitions
 - Consider sampling for high-volume entities
 
-</div>
 
 ---
 
@@ -1308,8 +1281,6 @@ TIMESERIES AUTO
 ```
 
 ---
-
-<div align="center">
 
 ### 📚 Additional Resources
 

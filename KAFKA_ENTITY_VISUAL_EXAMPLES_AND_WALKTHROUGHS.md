@@ -1,7 +1,5 @@
 # 🔧 Kafka Entity Definitions: Visual Examples and Code Walkthroughs
 
-<div align="center">
-
 ![Examples](https://img.shields.io/badge/Type-Interactive%20Examples-blue?style=for-the-badge)
 ![Scenarios](https://img.shields.io/badge/Scenarios-Real%20World-green?style=for-the-badge)
 ![Code](https://img.shields.io/badge/Code-Walkthrough-orange?style=for-the-badge)
@@ -10,7 +8,6 @@
 
 [⬅️ Back to Main Guide](KAFKA_ENTITY_DEFINITIONS_COMPLETE_WIKI.md) • [📋 PR Details](PR_TO_BE_VERIFIED.md)
 
-</div>
 
 ---
 
@@ -47,11 +44,10 @@
 
 ### 📖 Scenario: New Kafka Cluster Deployment
 
-<div style="background-color: #e3f2fd; border-radius: 8px; padding: 20px; margin: 20px 0;">
+> **📘 Note**
+> 
+> **Goal**: Follow data from a freshly deployed Kafka cluster through the entire Entity Platform
 
-**Goal**: Follow data from a freshly deployed Kafka cluster through the entire Entity Platform
-
-</div>
 
 ### Step 1: Raw Telemetry Arrives
 
@@ -104,9 +100,9 @@
 
 ### Step 3: Entity Creation
 
-<div style="background-color: #e8f5e9; border-radius: 8px; padding: 20px; margin: 20px 0;">
-
-**🎉 Entity Created Successfully!**
+> **✅ Success**
+> 
+> **🎉 Entity Created Successfully!**
 
 ```
 GUID: MTIzNDU2NzhJTkZSQU1FU1NBR0VfUVVFVUVfQ0xVU1RFUm9yZGVycy1wcm9kLWthZmth
@@ -121,7 +117,6 @@ Tags:
   - integration.type: polling
 ```
 
-</div>
 
 ### Step 4: Golden Metrics Populate
 
@@ -156,11 +151,10 @@ graph LR
 
 ### 📖 Scenario: Same Kafka Topic Across Providers
 
-<div style="background-color: #fff3e0; border-radius: 8px; padding: 20px; margin: 20px 0;">
+> **⚠️ Important**
+> 
+> **Goal**: Understand how the same logical topic "user-events" appears differently across providers
 
-**Goal**: Understand how the same logical topic "user-events" appears differently across providers
-
-</div>
 
 ### Provider Comparison
 
@@ -222,15 +216,14 @@ graph LR
 
 ### Unified View
 
-<div style="background-color: #f5f5f5; border-radius: 8px; padding: 20px; margin: 20px 0;">
+> **📝 Summary**
+> 
+> **Result**: Three different entities, but all share:
+> - ✅ Type: `MESSAGE_QUEUE_TOPIC`
+> - ✅ Golden tag: `kafka.topic.name = "user-events"`
+> - ✅ Provider-specific identifiers
+> - ✅ Same golden metrics structure
 
-**Result**: Three different entities, but all share:
-- ✅ Type: `MESSAGE_QUEUE_TOPIC`
-- ✅ Golden tag: `kafka.topic.name = "user-events"`
-- ✅ Provider-specific identifiers
-- ✅ Same golden metrics structure
-
-</div>
 
 ---
 
@@ -238,11 +231,10 @@ graph LR
 
 ### 📖 Scenario: Application Producing to Kafka
 
-<div style="background-color: #fce4ec; border-radius: 8px; padding: 20px; margin: 20px 0;">
+> **🎯 Goal**
+> 
+> **Goal**: See how APM spans create relationships between applications and Kafka topics
 
-**Goal**: See how APM spans create relationships between applications and Kafka topics
-
-</div>
 
 ### Step-by-Step Process
 
@@ -326,11 +318,10 @@ sequenceDiagram
 
 ### 📖 Scenario: Cluster Health Degradation
 
-<div style="background-color: #ffebee; border-radius: 8px; padding: 20px; margin: 20px 0;">
+> **⚠️ Warning**
+> 
+> **Goal**: Trace how a broker failure affects cluster health status
 
-**Goal**: Trace how a broker failure affects cluster health status
-
-</div>
 
 ### Timeline of Events
 
@@ -406,9 +397,9 @@ CASE
 
 ### Impact Analysis
 
-<div style="background-color: #fff5f5; border-radius: 8px; padding: 20px; margin: 20px 0;">
-
-**🚨 Cascading Effects**
+> **📋 Overview**
+> 
+> **🚨 Cascading Effects**
 
 1. **Entity Update**: Health Status: Healthy → Critical
 2. **Summary Metric**: "3 Offline Partitions" displayed
@@ -416,7 +407,6 @@ CASE
 4. **Dashboard Update**: Red status indicators
 5. **Service Map**: Shows impacted relationships
 
-</div>
 
 ---
 
@@ -424,11 +414,10 @@ CASE
 
 ### 📖 Scenario: Consumer Group Falling Behind
 
-<div style="background-color: #e8f5e9; border-radius: 8px; padding: 20px; margin: 20px 0;">
+> **✅ Success**
+> 
+> **Goal**: Monitor and analyze consumer lag patterns
 
-**Goal**: Monitor and analyze consumer lag patterns
-
-</div>
 
 ### Step 1: Consumer Group Data
 
@@ -513,11 +502,10 @@ relationship:
 
 ### 📖 Scenario: Investigating Topic Performance
 
-<div style="background-color: #e3f2fd; border-radius: 8px; padding: 20px; margin: 20px 0;">
+> **📘 Note**
+> 
+> **Goal**: Use dashboard widgets to diagnose performance issues
 
-**Goal**: Use dashboard widgets to diagnose performance issues
-
-</div>
 
 ### Dashboard Analysis Flow
 
@@ -558,9 +546,9 @@ inventory-updates:   500 msg/s █
 
 #### Widget 2: Consumer Lag Heatmap
 
-<div style="background-color: #fff3e0; border-radius: 8px; padding: 20px; margin: 20px 0;">
-
-**Discovery**: payment-processor group showing increasing lag on payment-events topic
+> **⚠️ Important**
+> 
+> **Discovery**: payment-processor group showing increasing lag on payment-events topic
 
 ```
 Consumer Groups →
@@ -570,7 +558,6 @@ payment-processor payment-events     ░░░░        ████        █
 order-processor   order-events       ████        ████        ░░░░░░░░
 ```
 
-</div>
 
 #### Widget 3: Broker Resource Usage
 
@@ -586,15 +573,14 @@ graph LR
 
 ### Root Cause Analysis
 
-<div style="background-color: #f5f5f5; border-radius: 8px; padding: 20px; margin: 20px 0;">
+> **📝 Summary**
+> 
+> **🔍 Findings**
+> 1. High message rate on payment-events topic
+> 2. Broker 2 CPU at 95% (bottleneck)
+> 3. Consumer lag increasing due to broker saturation
+> 4. Need to rebalance partitions or scale brokers
 
-**🔍 Findings**
-1. High message rate on payment-events topic
-2. Broker 2 CPU at 95% (bottleneck)
-3. Consumer lag increasing due to broker saturation
-4. Need to rebalance partitions or scale brokers
-
-</div>
 
 ---
 
@@ -602,11 +588,10 @@ graph LR
 
 ### 📖 Scenario: Partition Scaling Event
 
-<div style="background-color: #f3e5f5; border-radius: 8px; padding: 20px; margin: 20px 0;">
+> **🔮 Scenario**
+> 
+> **Goal**: Understand how TTLs affect entity lifecycle during scaling
 
-**Goal**: Understand how TTLs affect entity lifecycle during scaling
-
-</div>
 
 ### Timeline
 
@@ -673,15 +658,14 @@ graph TD
 
 ### Key Learning
 
-<div style="background-color: #e8f5e9; border-radius: 8px; padding: 20px; margin: 20px 0;">
+> **✅ Success**
+> 
+> **💡 TTL Benefits**
+> - Prevents accumulation of obsolete partition entities
+> - Automatically cleans up after scaling events
+> - Reduces storage and query overhead
+> - Maintains accurate current state
 
-**💡 TTL Benefits**
-- Prevents accumulation of obsolete partition entities
-- Automatically cleans up after scaling events
-- Reduces storage and query overhead
-- Maintains accurate current state
-
-</div>
 
 ---
 
@@ -689,11 +673,10 @@ graph TD
 
 ### 📖 Scenario: Handling Incomplete Data
 
-<div style="background-color: #ffebee; border-radius: 8px; padding: 20px; margin: 20px 0;">
+> **⚠️ Warning**
+> 
+> **Goal**: Understand how the system handles missing or malformed data
 
-**Goal**: Understand how the system handles missing or malformed data
-
-</div>
 
 ### Case 1: Missing Required Attribute
 
@@ -775,16 +758,15 @@ graph LR
 
 ### Error Recovery Patterns
 
-<div style="background-color: #f5f5f5; border-radius: 8px; padding: 20px; margin: 20px 0;">
-
-**🛡️ Built-in Resilience**
+> **📝 Summary**
+> 
+> **🛡️ Built-in Resilience**
 
 1. **Graceful Degradation**: Missing optional fields don't break entity creation
 2. **Fallback Chains**: Multiple attempts to find required data
 3. **TTL Expiration**: Temporary conditions don't persist forever
 4. **Event Preservation**: Raw events stored even if synthesis fails
 
-</div>
 
 ---
 
@@ -792,11 +774,10 @@ graph LR
 
 ### 📖 Common Query Patterns
 
-<div style="background-color: #e3f2fd; border-radius: 8px; padding: 20px; margin: 20px 0;">
+> **📘 Note**
+> 
+> **Goal**: Master NRQL queries for different monitoring scenarios
 
-**Goal**: Master NRQL queries for different monitoring scenarios
-
-</div>
 
 ### Pattern 1: Find Unhealthy Clusters
 
@@ -849,8 +830,8 @@ audit-log         ████                 0.8 GB/s
 
 ### Pattern 3: Consumer Groups with Growing Lag
 
-<div style="background-color: #fff3e0; border-radius: 8px; padding: 20px; margin: 20px 0;">
-
+> **⚠️ Important**
+> 
 ```sql
 FROM KafkaOffsetSample
 SELECT derivative(sum(consumer.lag), 1 minute) as 'Lag Growth Rate'
@@ -864,7 +845,6 @@ SINCE 30 minutes ago
 - order-processor: +500 messages/min ⚠️
 - analytics-consumer: +50 messages/min ℹ️
 
-</div>
 
 ### Pattern 4: Cross-Provider Overview
 
@@ -890,11 +870,10 @@ Total: 10 Kafka clusters
 
 ### 📖 Scenario: End-to-End Kafka Monitoring
 
-<div style="background-color: #e8f5e9; border-radius: 8px; padding: 20px; margin: 20px 0;">
+> **✅ Success**
+> 
+> **Goal**: See how all components work together in a production environment
 
-**Goal**: See how all components work together in a production environment
-
-</div>
 
 ### Initial Infrastructure State
 
@@ -955,9 +934,9 @@ graph TB
 
 ### Monitoring Dashboard View
 
-<div style="background-color: #f5f5f5; border-radius: 8px; padding: 20px; margin: 20px 0;">
-
-**📊 Key Metrics Dashboard**
+> **📝 Summary**
+> 
+> **📊 Key Metrics Dashboard**
 
 ```
 ┌─────────────────────────┬─────────────────────────┬─────────────────────────┐
@@ -981,7 +960,6 @@ graph TB
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-</div>
 
 ### Incident Response Flow
 
@@ -1009,9 +987,9 @@ sequenceDiagram
 
 ### Impact Analysis
 
-<div style="background-color: #ffebee; border-radius: 8px; padding: 20px; margin: 20px 0;">
-
-**🔍 Automated Impact Discovery**
+> **⚠️ Warning**
+> 
+> **🔍 Automated Impact Discovery**
 
 1. **Cluster Status**: Critical (10 offline partitions)
 2. **Affected Topics**: payment-events, order-events (partially offline)
@@ -1019,7 +997,6 @@ sequenceDiagram
 4. **Consumer Impact**: payment-processor lag increasing
 5. **Business Impact**: Payment processing delays
 
-</div>
 
 ### Resolution Tracking
 
@@ -1039,8 +1016,8 @@ Timeline:
 
 ## 🎯 Key Takeaways
 
-<div style="background-color: #e3f2fd; border-radius: 8px; padding: 20px; margin: 20px 0;">
-
+> **📘 Note**
+> 
 ### What These Examples Demonstrate
 
 1. **Entity Creation**: Raw events → Smart entities with context
@@ -1054,11 +1031,8 @@ Timeline:
 9. **Query Patterns**: Powerful analysis capabilities
 10. **Complete Observability**: Full-stack Kafka monitoring
 
-</div>
 
 ---
-
-<div align="center">
 
 ### 📚 Continue Learning
 
