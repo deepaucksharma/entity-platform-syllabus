@@ -1,26 +1,72 @@
-# Kafka Entity Definitions: Visual Examples and Code Walkthroughs
+# 🔧 Kafka Entity Definitions: Visual Examples and Code Walkthroughs
 
-## Interactive Examples and Real-World Scenarios
+<div align="center">
 
-This companion guide provides hands-on examples and visual walkthroughs to complement the main wiki.
+![Examples](https://img.shields.io/badge/Type-Interactive%20Examples-blue?style=for-the-badge)
+![Scenarios](https://img.shields.io/badge/Scenarios-Real%20World-green?style=for-the-badge)
+![Code](https://img.shields.io/badge/Code-Walkthrough-orange?style=for-the-badge)
+
+**Hands-on examples and visual walkthroughs to master Kafka entity monitoring**
+
+[⬅️ Back to Main Guide](KAFKA_ENTITY_DEFINITIONS_COMPLETE_WIKI.md) • [📋 PR Details](PR_TO_BE_VERIFIED.md)
+
+</div>
 
 ---
 
-## Example 1: Complete Entity Creation Flow
+## 📑 Example Navigation
 
-### Scenario: New Kafka Cluster Deployment
+<table>
+<tr>
+<td width="50%" valign="top">
 
-Let's follow data from a freshly deployed Kafka cluster through the entire Entity Platform:
+### 🎯 Basic Examples
+1. [Complete Entity Creation Flow](#example-1)
+2. [Multi-Provider Entity Handling](#example-2)
+3. [Relationship Discovery](#example-3)
+4. [Health Calculation](#example-4)
+5. [Consumer Lag Tracking](#example-5)
 
-#### Step 1: Raw Telemetry Arrives
+</td>
+<td width="50%" valign="top">
+
+### 🚀 Advanced Examples
+6. [Dashboard in Action](#example-6)
+7. [TTL and Lifecycle](#example-7)
+8. [Error Handling](#example-8)
+9. [Query Patterns](#example-9)
+10. [Complete Monitoring](#example-10)
+
+</td>
+</tr>
+</table>
+
+---
+
+## Example 1: Complete Entity Creation Flow {#example-1}
+
+### 📖 Scenario: New Kafka Cluster Deployment
+
+<div style="background-color: #e3f2fd; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
+**Goal**: Follow data from a freshly deployed Kafka cluster through the entire Entity Platform
+
+</div>
+
+### Step 1: Raw Telemetry Arrives
+
+<table>
+<tr>
+<td width="50%">
+
+**Incoming Event**
 
 ```json
-// Incoming event from nri-kafka integration
 {
   "eventType": "KafkaClusterSample",
   "clusterName": "orders-prod-kafka",
   "kafka.version": "3.5.0",
-  "kafka.cluster.id": "MkU3OEVBNTcwNTJENDM2Qk",
+  "kafka.cluster.id": "MkU3OEVBNTcw",
   "cluster.activeControllerCount": 1,
   "cluster.offlinePartitionsCount": 0,
   "cluster.underReplicatedPartitions": 0,
@@ -30,7 +76,21 @@ Let's follow data from a freshly deployed Kafka cluster through the entire Entit
 }
 ```
 
-#### Step 2: Synthesis Rule Matches
+</td>
+<td width="50%">
+
+**What Happens Next**
+
+1. ✅ Event ingested by Entity Platform
+2. ✅ Synthesis rules evaluated
+3. ✅ Matching rule found
+4. ✅ Entity creation triggered
+
+</td>
+</tr>
+</table>
+
+### Step 2: Synthesis Rule Matches
 
 ```yaml
 # This rule from definition.yml matches our event
@@ -42,23 +102,28 @@ Let's follow data from a freshly deployed Kafka cluster through the entire Entit
       value: KafkaClusterSample  # ✓ Matches!
 ```
 
-#### Step 3: Entity Creation
+### Step 3: Entity Creation
+
+<div style="background-color: #e8f5e9; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
+**🎉 Entity Created Successfully!**
 
 ```
-Entity Created:
-- GUID: MTIzNDU2NzhJTkZSQU1FU1NBR0VfUVVFVUVfQ0xVU1RFUm9yZGVycy1wcm9kLWthZmth
-- Domain: INFRA
-- Type: MESSAGE_QUEUE_CLUSTER
-- Name: orders-prod-kafka
-- Tags:
+GUID: MTIzNDU2NzhJTkZSQU1FU1NBR0VfUVVFVUVfQ0xVU1RFUm9yZGVycy1wcm9kLWthZmth
+Domain: INFRA
+Type: MESSAGE_QUEUE_CLUSTER
+Name: orders-prod-kafka
+Tags:
   - kafka.cluster.name: orders-prod-kafka
-  - kafka.cluster.id: MkU3OEVBNTcwNTJENDM2Qk
+  - kafka.cluster.id: MkU3OEVBNTcw
   - kafka.version: 3.5.0
   - provider: SELF_MANAGED
   - integration.type: polling
 ```
 
-#### Step 4: Golden Metrics Populate
+</div>
+
+### Step 4: Golden Metrics Populate
 
 ```sql
 -- Query executed for activeControllerCount metric
@@ -69,15 +134,46 @@ WHERE entity.guid = 'MTIzNDU2NzhJTkZSQU1FU1NBR0VfUVVFVUVfQ0xVU1RFUm9yZGVycy1wcm9
 -- Result: 1 (Healthy!)
 ```
 
+### 🎨 Visual Flow
+
+```mermaid
+graph LR
+    A[Raw Event] -->|1. Ingestion| B[Entity Platform]
+    B -->|2. Rule Match| C[Synthesis Engine]
+    C -->|3. GUID Generation| D[Entity Store]
+    D -->|4. Metric Queries| E[Golden Metrics]
+    
+    style A fill:#ffebee
+    style B fill:#e3f2fd
+    style C fill:#fff3e0
+    style D fill:#e8f5e9
+    style E fill:#f3e5f5
+```
+
 ---
 
-## Example 2: Multi-Provider Entity Handling
+## Example 2: Multi-Provider Entity Handling {#example-2}
 
-### Scenario: Same Kafka Topic Across Providers
+### 📖 Scenario: Same Kafka Topic Across Providers
 
-Here's how the same logical topic appears differently across providers:
+<div style="background-color: #fff3e0; border-radius: 8px; padding: 20px; margin: 20px 0;">
 
-#### Self-Managed Kafka
+**Goal**: Understand how the same logical topic "user-events" appears differently across providers
+
+</div>
+
+### Provider Comparison
+
+<table>
+<tr>
+<th width="33%">🔧 Self-Managed</th>
+<th width="33%">☁️ AWS MSK</th>
+<th width="33%">🌊 Confluent Cloud</th>
+</tr>
+<tr>
+<td>
+
+**Event Data**
 ```json
 {
   "eventType": "KafkaTopicSample",
@@ -86,10 +182,14 @@ Here's how the same logical topic appears differently across providers:
   "topic.partitions": 12,
   "topic.replicationFactor": 3
 }
-// Creates entity: prod-kafka:user-events
 ```
 
-#### AWS MSK
+**Entity ID**: `prod-kafka:user-events`
+
+</td>
+<td>
+
+**Event Data**
 ```json
 {
   "eventType": "AwsMskTopicSample",
@@ -97,10 +197,14 @@ Here's how the same logical topic appears differently across providers:
   "aws.kafka.topic": "user-events",
   "aws.kafka.PartitionCount": 12
 }
-// Creates entity: arn:aws:kafka:us-east-1:123456789012:cluster/msk-prod/uuid:user-events
 ```
 
-#### Confluent Cloud
+**Entity ID**: `arn:aws:kafka...:user-events`
+
+</td>
+<td>
+
+**Event Data**
 ```json
 {
   "eventType": "ConfluentCloudTopicSample",
@@ -108,19 +212,39 @@ Here's how the same logical topic appears differently across providers:
   "topic": "user-events",
   "resource.kafka.id": "confluent-prod"
 }
-// Creates entity: lkc-abc123:user-events
 ```
 
-**Result**: Three different entities, but all have:
-- Type: MESSAGE_QUEUE_TOPIC
-- Golden tag: kafka.topic.name = "user-events"
-- Provider-specific identifiers
+**Entity ID**: `lkc-abc123:user-events`
+
+</td>
+</tr>
+</table>
+
+### Unified View
+
+<div style="background-color: #f5f5f5; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
+**Result**: Three different entities, but all share:
+- ✅ Type: `MESSAGE_QUEUE_TOPIC`
+- ✅ Golden tag: `kafka.topic.name = "user-events"`
+- ✅ Provider-specific identifiers
+- ✅ Same golden metrics structure
+
+</div>
 
 ---
 
-## Example 3: Relationship Discovery in Action
+## Example 3: Relationship Discovery in Action {#example-3}
 
-### Scenario: Application Producing to Kafka
+### 📖 Scenario: Application Producing to Kafka
+
+<div style="background-color: #fce4ec; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
+**Goal**: See how APM spans create relationships between applications and Kafka topics
+
+</div>
+
+### Step-by-Step Process
 
 #### Step 1: APM Span Data
 ```json
@@ -145,33 +269,78 @@ Here's how the same logical topic appears differently across providers:
       value: kafka            # ✓
 ```
 
-#### Step 3: Relationship Creation
+#### Step 3: Relationship Created
+
+<table>
+<tr>
+<td width="50%">
+
+**Relationship Details**
 ```
-Relationship:
-- Type: PRODUCES_TO
-- Source: APM|APPLICATION|order-service (existing entity)
-- Target: INFRA|MESSAGE_QUEUE_TOPIC|prod-cluster:order-events
-- TTL: 15 minutes (behavioral relationship)
+Type: PRODUCES_TO
+TTL: 15 minutes
+Source: order-service (APM entity)
+Target: order-events (Kafka topic)
 ```
 
-#### Step 4: Visible in Service Map
+</td>
+<td width="50%">
+
+**Service Map View**
 ```
-[order-service] ----PRODUCES_TO----> [order-events topic]
-                                           |
-                                    CONTAINED_IN
-                                           |
-                                    [prod-cluster]
+[order-service]
+      |
+      | PRODUCES_TO
+      ↓
+[order-events topic]
+      |
+      | CONTAINED_IN
+      ↓
+[prod-cluster]
+```
+
+</td>
+</tr>
+</table>
+
+### 🎨 Complete Flow Visualization
+
+```mermaid
+sequenceDiagram
+    participant App as Order Service
+    participant APM as APM Agent
+    participant EP as Entity Platform
+    participant Kafka as Kafka Topic
+    
+    App->>APM: Send message to Kafka
+    APM->>EP: Report span data
+    EP->>EP: Match relationship rule
+    EP->>EP: Build topic GUID
+    EP->>Kafka: Create relationship
+    Note over EP,Kafka: PRODUCES_TO relationship<br/>TTL: 15 minutes
 ```
 
 ---
 
-## Example 4: Complex Health Calculation
+## Example 4: Complex Health Calculation {#example-4}
 
-### Scenario: Cluster Health Degradation
+### 📖 Scenario: Cluster Health Degradation
 
-Let's trace how a broker failure affects cluster health:
+<div style="background-color: #ffebee; border-radius: 8px; padding: 20px; margin: 20px 0;">
 
-#### Time T0: Healthy State
+**Goal**: Trace how a broker failure affects cluster health status
+
+</div>
+
+### Timeline of Events
+
+#### ⏰ Time T0: Healthy State
+
+<table>
+<tr>
+<td width="60%">
+
+**Metrics**
 ```json
 {
   "eventType": "KafkaClusterSample",
@@ -182,48 +351,87 @@ Let's trace how a broker failure affects cluster health:
 }
 ```
 
-**Health Calculation**:
+</td>
+<td width="40%">
+
+**Health Calculation**
 ```sql
 CASE 
-  WHEN latest(activeControllerCount) = 1      -- ✓ True
-   AND latest(offlinePartitionsCount) = 0     -- ✓ True
-  THEN 'Healthy'                              -- Result!
+  WHEN activeControllerCount = 1  ✓
+   AND offlinePartitionsCount = 0 ✓
+  THEN 'Healthy' ← Result
 ```
 
-#### Time T1: Broker Fails
+**Status**: 🟢 Healthy
+
+</td>
+</tr>
+</table>
+
+#### ⏰ Time T1: Broker Fails
+
+<table>
+<tr>
+<td width="60%">
+
+**Metrics**
 ```json
 {
   "eventType": "KafkaClusterSample",
   "clusterName": "prod-kafka",
   "cluster.activeControllerCount": 1,
-  "cluster.offlinePartitionsCount": 3,        -- Changed!
-  "cluster.underReplicatedPartitions": 15     -- Changed!
+  "cluster.offlinePartitionsCount": 3,     // ⚠️
+  "cluster.underReplicatedPartitions": 15  // ⚠️
 }
 ```
 
-**Health Calculation**:
+</td>
+<td width="40%">
+
+**Health Calculation**
 ```sql
 CASE 
-  WHEN latest(activeControllerCount) = 1      -- ✓ True
-   AND latest(offlinePartitionsCount) = 0     -- ✗ False
+  WHEN activeControllerCount = 1  ✓
+   AND offlinePartitionsCount = 0 ✗
   THEN 'Healthy'
-  WHEN latest(activeControllerCount) != 1     -- False
-   OR latest(offlinePartitionsCount) > 0     -- ✓ True
-  THEN 'Critical'                             -- Result!
+  WHEN offlinePartitionsCount > 0 ✓
+  THEN 'Critical' ← Result
 ```
 
-**Entity Update**:
-- Health Status: Healthy → Critical
-- Summary Metric: "3 Offline Partitions"
-- Alert triggered (if configured)
+**Status**: 🔴 Critical
+
+</td>
+</tr>
+</table>
+
+### Impact Analysis
+
+<div style="background-color: #fff5f5; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
+**🚨 Cascading Effects**
+
+1. **Entity Update**: Health Status: Healthy → Critical
+2. **Summary Metric**: "3 Offline Partitions" displayed
+3. **Alert Triggered**: If configured for health status
+4. **Dashboard Update**: Red status indicators
+5. **Service Map**: Shows impacted relationships
+
+</div>
 
 ---
 
-## Example 5: Consumer Lag Tracking
+## Example 5: Consumer Lag Tracking {#example-5}
 
-### Scenario: Consumer Group Falling Behind
+### 📖 Scenario: Consumer Group Falling Behind
 
-#### Step 1: Consumer Group Entity Creation
+<div style="background-color: #e8f5e9; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
+**Goal**: Monitor and analyze consumer lag patterns
+
+</div>
+
+### Step 1: Consumer Group Data
+
 ```json
 {
   "eventType": "KafkaOffsetSample",
@@ -235,56 +443,90 @@ CASE
 }
 ```
 
-**Creates/Updates**:
-- Entity: MESSAGE_QUEUE_CONSUMER_GROUP "payment-processor"
-- Identifier: "prod-kafka:payment-processor"
+### Step 2: Entity and Metrics
 
-#### Step 2: Lag Metrics Calculation
-```sql
--- Total lag across all partitions
-SELECT sum(`consumer.lag`)
-FROM KafkaOffsetSample
-WHERE entity.guid = '{payment-processor-guid}'
--- Result: 15,000 (across 10 partitions)
+<table>
+<tr>
+<td width="50%">
 
--- Max partition lag
-SELECT max(`consumer.lag`)
-FROM KafkaOffsetSample
-WHERE entity.guid = '{payment-processor-guid}'
-FACET partition
--- Result: 3,500 (partition 7 is furthest behind)
+**Entity Created/Updated**
+```
+Type: MESSAGE_QUEUE_CONSUMER_GROUP
+Name: payment-processor
+ID: prod-kafka:payment-processor
 ```
 
-#### Step 3: Lag Trend Analysis
+</td>
+<td width="50%">
+
+**Lag Metrics Calculated**
 ```sql
--- Derivative shows lag growing at 100 messages/minute
-SELECT derivative(sum(consumer.lag), 1 minute)
-FROM KafkaOffsetSample
-WHERE entity.guid = '{payment-processor-guid}'
--- Result: +100 (getting worse!)
+-- Total lag
+SUM(consumer.lag) = 15,000
+
+-- Max partition lag  
+MAX(consumer.lag) = 3,500
+
+-- Lag trend
+DERIVATIVE(SUM(lag)) = +100/min
 ```
 
-#### Step 4: Relationship to Topic
+</td>
+</tr>
+</table>
+
+### Step 3: Visual Analysis
+
+```mermaid
+graph TD
+    subgraph "Consumer Group: payment-processor"
+        A[Total Lag: 15,000] --> B[Partition 0: 1,500]
+        A --> C[Partition 1: 2,000]
+        A --> D[Partition 2: 1,800]
+        A --> E[Partition 7: 3,500 🔴]
+        A --> F[... 6 more partitions]
+    end
+    
+    G[Lag Trend: +100/min ⚠️] --> A
+    
+    style E fill:#ffebee
+    style G fill:#fff3e0
+```
+
+### Step 4: Relationship Context
+
 ```yaml
 relationship:
   type: CONSUMES_FROM
-  source: payment-processor (consumer group)
-  target: payment-events (topic)
+  source: payment-processor
+  target: payment-events
   expires: 15 minutes
   metadata:
     totalLag: 15000
     partitionsConsumed: 10
+    lagTrend: increasing
 ```
 
 ---
 
-## Example 6: Dashboard in Action
+## Example 6: Dashboard in Action {#example-6}
 
-### Scenario: Investigating Topic Performance
+### 📖 Scenario: Investigating Topic Performance
 
-Here's how the dashboard helps diagnose issues:
+<div style="background-color: #e3f2fd; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
+**Goal**: Use dashboard widgets to diagnose performance issues
+
+</div>
+
+### Dashboard Analysis Flow
 
 #### Widget 1: Topic Throughput
+<table>
+<tr>
+<td width="50%">
+
+**Configuration**
 ```json
 {
   "title": "Message Rate by Topic",
@@ -297,149 +539,272 @@ Here's how the dashboard helps diagnose issues:
 }
 ```
 
-**Shows**:
+</td>
+<td width="50%">
+
+**Visual Result**
 ```
-payment-events:     5,000 msg/sec  ████████████████████
-order-events:       3,500 msg/sec  ██████████████
-user-events:        2,000 msg/sec  ████████
-inventory-updates:    500 msg/sec  ██
+payment-events:    5,000 msg/s ████████████
+order-events:      3,500 msg/s ████████
+user-events:       2,000 msg/s ████
+inventory-updates:   500 msg/s █
 ```
+
+**Insight**: payment-events has highest load
+
+</td>
+</tr>
+</table>
 
 #### Widget 2: Consumer Lag Heatmap
-```json
-{
-  "visualization": "viz.heatmap",
-  "query": "SELECT histogram(consumer.lag, 10, 20) 
-           FROM KafkaOffsetSample 
-           WHERE clusterName = 'prod-kafka' 
-           FACET consumerGroup, topic"
-}
+
+<div style="background-color: #fff3e0; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
+**Discovery**: payment-processor group showing increasing lag on payment-events topic
+
+```
+Consumer Groups →
+                  Topics ↓        Low Lag    Medium Lag    High Lag
+payment-processor payment-events     ░░░░        ████        ████████
+                  order-events       ████        ░░░░        ░░░░░░░░
+order-processor   order-events       ████        ████        ░░░░░░░░
 ```
 
-**Reveals**: payment-processor group has high lag on payment-events topic
+</div>
 
 #### Widget 3: Broker Resource Usage
-```json
-{
-  "visualization": "viz.line",
-  "query": "SELECT average(broker.cpuPercent) as 'CPU %',
-                   average(broker.diskUsedPercent) as 'Disk %' 
-           FROM KafkaBrokerSample 
-           WHERE clusterName = 'prod-kafka' 
-           FACET broker.id 
-           TIMESERIES AUTO"
-}
+
+```mermaid
+graph LR
+    subgraph "Broker Resource Timeline"
+        A[Broker 1<br/>CPU: 45%] --> B[Broker 2<br/>CPU: 95% 🔴]
+        B --> C[Broker 3<br/>CPU: 60%]
+    end
+    
+    style B fill:#ffebee
 ```
 
-**Shows**: Broker 2 CPU spiking to 95% during peak hours
+### Root Cause Analysis
+
+<div style="background-color: #f5f5f5; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
+**🔍 Findings**
+1. High message rate on payment-events topic
+2. Broker 2 CPU at 95% (bottleneck)
+3. Consumer lag increasing due to broker saturation
+4. Need to rebalance partitions or scale brokers
+
+</div>
 
 ---
 
-## Example 7: TTL and Lifecycle Management
+## Example 7: TTL and Lifecycle Management {#example-7}
 
-### Scenario: Partition Scaling Event
+### 📖 Scenario: Partition Scaling Event
 
-Let's see how TTLs affect entity lifecycle during a partition increase:
+<div style="background-color: #f3e5f5; border-radius: 8px; padding: 20px; margin: 20px 0;">
 
-#### Time T0: Original State
+**Goal**: Understand how TTLs affect entity lifecycle during scaling
+
+</div>
+
+### Timeline
+
+#### T0: Original State (6 Partitions)
 ```
 Topic: user-events
-Partitions: 6
-Entities:
-- user-events-partition-0 (created 3 hours ago)
-- user-events-partition-1 (created 3 hours ago)
-- ...
-- user-events-partition-5 (created 3 hours ago)
+├── partition-0 (created 3h ago)
+├── partition-1 (created 3h ago)
+├── partition-2 (created 3h ago)
+├── partition-3 (created 3h ago)
+├── partition-4 (created 3h ago)
+└── partition-5 (created 3h ago)
 ```
 
-#### Time T1: Scale to 12 Partitions
+#### T1: Scale to 12 Partitions
 ```
-New partition entities created:
-- user-events-partition-6 (new)
-- user-events-partition-7 (new)
-- ...
-- user-events-partition-11 (new)
+Topic: user-events
+├── partition-0 through 5 (existing)
+├── partition-6 (NEW) ← Created now
+├── partition-7 (NEW) ← Created now
+├── partition-8 (NEW) ← Created now
+├── partition-9 (NEW) ← Created now
+├── partition-10 (NEW) ← Created now
+└── partition-11 (NEW) ← Created now
 ```
 
-#### Time T4: Four Hours Later
+#### T4: Four Hours Later
+
+<table>
+<tr>
+<td width="50%">
+
+**TTL Configuration**
 ```yaml
-# Partition entity configuration
-entityExpirationTime: FOUR_HOURS  # Shorter TTL
-
-# Result:
-- Partitions 0-5: Still exist (data within 4 hours)
-- Partitions 6-11: Still exist (recently created)
+configuration:
+  entityExpirationTime: FOUR_HOURS
 ```
 
-#### Time T8: If Scaled Back Down
-```
-Topic scaled back to 6 partitions
-- Partitions 0-5: Still receiving data (entities remain)
-- Partitions 6-11: No new data (will expire after 4 hours)
+</td>
+<td width="50%">
+
+**Entity Status**
+- Partitions 0-5: ✅ Active (recent data)
+- Partitions 6-11: ✅ Active (< 4 hours old)
+
+</td>
+</tr>
+</table>
+
+#### T8: Scale Back to 6 Partitions
+
+```mermaid
+graph TD
+    A[Scale Back Event] --> B{Partition Status}
+    B --> C[0-5: Still receiving data]
+    B --> D[6-11: No new data]
+    
+    C --> E[Entities remain active]
+    D --> F[Will expire in 4 hours]
+    
+    style D fill:#fff3e0
+    style F fill:#ffebee
 ```
 
-**Key Learning**: Short TTLs for high-cardinality entities prevent accumulation of obsolete entities.
+### Key Learning
+
+<div style="background-color: #e8f5e9; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
+**💡 TTL Benefits**
+- Prevents accumulation of obsolete partition entities
+- Automatically cleans up after scaling events
+- Reduces storage and query overhead
+- Maintains accurate current state
+
+</div>
 
 ---
 
-## Example 8: Error Handling and Edge Cases
+## Example 8: Error Handling and Edge Cases {#example-8}
 
-### Scenario: Incomplete Data Handling
+### 📖 Scenario: Handling Incomplete Data
 
-#### Case 1: Missing Required Attribute
+<div style="background-color: #ffebee; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
+**Goal**: Understand how the system handles missing or malformed data
+
+</div>
+
+### Case 1: Missing Required Attribute
+
+<table>
+<tr>
+<td width="50%">
+
+**Incoming Event**
 ```json
 {
   "eventType": "KafkaClusterSample",
-  // Missing clusterName!
+  // ❌ Missing clusterName!
   "cluster.activeControllerCount": 1
 }
 ```
 
-**Result**: No entity created (identifier required)
+</td>
+<td width="50%">
 
-#### Case 2: Fallback Attributes
+**Result**
+```
+❌ No entity created
+Reason: identifier field missing
+Action: Event logged, metrics recorded
+       but no entity synthesis
+```
+
+</td>
+</tr>
+</table>
+
+### Case 2: Fallback Attributes
+
+<table>
+<tr>
+<td width="50%">
+
+**Event with Missing Primary**
 ```json
 {
   "eventType": "AwsMskBrokerSample",
   "aws.kafka.clusterArn": "arn:aws:kafka...",
-  // aws.kafka.clusterName is missing
-  "displayName": "msk-prod-cluster"  // But this exists
+  // aws.kafka.clusterName missing
+  "displayName": "msk-prod-cluster"
 }
 ```
 
+</td>
+<td width="50%">
+
+**Fallback Chain**
 ```yaml
-# Fallback chain in action
 aws.kafka.clusterName:
   entityTagName: kafka.cluster.name
-  fallbackAttribute: clusterName      # Not found
-  fallbackAttribute: displayName      # Found! Used as kafka.cluster.name
+  fallbackAttribute: clusterName    ❌
+  fallbackAttribute: displayName    ✅
 ```
 
-#### Case 3: Conditional Tag with TTL
-```json
-{
-  "eventType": "ConfluentCloudPartitionSample",
-  "partition.id": 0,
-  "hotPartition": true,  // Temporary spike
-  "timestamp": 1700000000000
-}
+**Result**: Uses displayName
+
+</td>
+</tr>
+</table>
+
+### Case 3: Conditional TTL Tags
+
+```mermaid
+graph LR
+    A[Event at T0] --> B{Has hotPartition?}
+    B -->|Yes| C[Tag added with TTL]
+    B -->|No| D[Tag not added]
+    
+    C --> E[T0 + 1 hour]
+    E --> F[Tag expires if not refreshed]
+    
+    style C fill:#fff3e0
+    style F fill:#ffebee
 ```
 
-```yaml
-tags:
-  hotPartition:
-    ttl: P1H  # Only retained for 1 hour
-```
+### Error Recovery Patterns
 
-**Result**: hotPartition=true tag expires after 1 hour if not refreshed
+<div style="background-color: #f5f5f5; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
+**🛡️ Built-in Resilience**
+
+1. **Graceful Degradation**: Missing optional fields don't break entity creation
+2. **Fallback Chains**: Multiple attempts to find required data
+3. **TTL Expiration**: Temporary conditions don't persist forever
+4. **Event Preservation**: Raw events stored even if synthesis fails
+
+</div>
 
 ---
 
-## Example 9: Query Pattern Examples
+## Example 9: Query Pattern Examples {#example-9}
 
-### Common Query Patterns for Different Use Cases
+### 📖 Common Query Patterns
 
-#### 1. Find Unhealthy Clusters
+<div style="background-color: #e3f2fd; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
+**Goal**: Master NRQL queries for different monitoring scenarios
+
+</div>
+
+### Pattern 1: Find Unhealthy Clusters
+
+<table>
+<tr>
+<td width="60%">
+
+**Query**
 ```sql
 FROM KafkaClusterSample, AwsMskClusterSample
 SELECT latest(clusterName), 
@@ -450,7 +815,22 @@ WHERE activeControllerCount != 1
 SINCE 5 minutes ago
 ```
 
-#### 2. Top Topics by Volume
+</td>
+<td width="40%">
+
+**Results**
+```
+prod-kafka     0    3  🔴
+staging-kafka  2    0  🔴
+test-kafka     1    0  🟢
+```
+
+</td>
+</tr>
+</table>
+
+### Pattern 2: Top Topics by Volume
+
 ```sql
 FROM KafkaTopicSample
 SELECT sum(topic.bytesInPerSec) as 'Throughput'
@@ -459,7 +839,18 @@ SINCE 1 hour ago
 LIMIT 10
 ```
 
-#### 3. Consumer Groups with Growing Lag
+**Visual Result**:
+```
+payment-events    ████████████████████ 5.2 GB/s
+order-events      ████████████         3.1 GB/s
+user-events       ████████             2.0 GB/s
+audit-log         ████                 0.8 GB/s
+```
+
+### Pattern 3: Consumer Groups with Growing Lag
+
+<div style="background-color: #fff3e0; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
 ```sql
 FROM KafkaOffsetSample
 SELECT derivative(sum(consumer.lag), 1 minute) as 'Lag Growth Rate'
@@ -468,7 +859,15 @@ FACET consumerGroup
 SINCE 30 minutes ago
 ```
 
-#### 4. Cross-Provider Cluster Count
+**Alert-worthy Results**:
+- payment-processor: +1000 messages/min ⚠️
+- order-processor: +500 messages/min ⚠️
+- analytics-consumer: +50 messages/min ℹ️
+
+</div>
+
+### Pattern 4: Cross-Provider Overview
+
 ```sql
 SELECT uniqueCount(clusterName) as 'Self-Managed',
        uniqueCount(aws.kafka.clusterArn) as 'AWS MSK',
@@ -477,95 +876,196 @@ FROM KafkaClusterSample, AwsMskClusterSample, ConfluentCloudClusterSample
 SINCE 1 day ago
 ```
 
----
-
-## Example 10: Building Custom Alerts
-
-### Based on Entity Golden Metrics
-
-#### Alert 1: Cluster Health
-```yaml
-Name: Kafka Cluster Unhealthy
-Query: |
-  SELECT latest(activeControllerCount) as 'controllers',
-         latest(offlinePartitionsCount) as 'offline'
-  FROM KafkaClusterSample
-  WHERE entity.guid = '{cluster-guid}'
-  
-Condition: controllers != 1 OR offline > 0
-For: 5 minutes
+**Infrastructure Summary**:
 ```
-
-#### Alert 2: Consumer Lag Threshold
-```yaml
-Name: Consumer Group Lag Critical
-Query: |
-  SELECT sum(consumer.lag) as 'totalLag'
-  FROM KafkaOffsetSample
-  WHERE entity.guid = '{consumer-group-guid}'
-  
-Condition: totalLag > 100000
-For: 10 minutes
-```
-
-#### Alert 3: Broker Resource Exhaustion
-```yaml
-Name: Kafka Broker High CPU
-Query: |
-  SELECT average(broker.cpuPercent) as 'cpu'
-  FROM KafkaBrokerSample
-  WHERE entity.guid = '{broker-guid}'
-  
-Condition: cpu > 90
-For: 15 minutes
+Self-Managed: 5 clusters
+AWS MSK: 3 clusters
+Confluent: 2 clusters
+Total: 10 Kafka clusters
 ```
 
 ---
 
-## Putting It All Together: Complete Monitoring Scenario
+## Example 10: Complete Monitoring Scenario {#example-10}
 
-### Initial State
-- 1 Kafka cluster with 3 brokers
-- 10 topics with varying partition counts
-- 5 consumer groups
-- 3 producer applications
+### 📖 Scenario: End-to-End Kafka Monitoring
 
-### Entity Creation Flow
-1. **43 infrastructure entities** created:
-   - 1 cluster
-   - 3 brokers  
-   - 10 topics
-   - ~30 partitions (varies by topic)
-   - 5 consumer groups
+<div style="background-color: #e8f5e9; border-radius: 8px; padding: 20px; margin: 20px 0;">
 
-2. **6 application entities** discovered:
-   - 3 producers (from APM spans)
-   - 3 consumers (from APM spans)
+**Goal**: See how all components work together in a production environment
 
-3. **~25 relationships** formed:
-   - Cluster CONTAINS brokers/topics
-   - Brokers HOST partitions
-   - Consumer groups CONSUME_FROM topics
-   - Applications PRODUCE_TO/CONSUME_FROM topics
+</div>
 
-### Monitoring Dashboard Shows
-- Cluster health: GREEN
-- Total throughput: 50K messages/sec
-- Average broker CPU: 45%
-- Max consumer lag: 5,000 messages
-- Active relationships in service map
+### Initial Infrastructure State
 
-### When Issues Occur
-1. Broker 2 fails
-2. Cluster health → CRITICAL
-3. Offline partitions: 10
-4. Under-replicated partitions: 30
-5. Consumer lag starts growing
-6. Alerts fire based on golden metrics
-7. Service map shows impacted data flows
+```mermaid
+graph TB
+    subgraph "Kafka Infrastructure"
+        A[Kafka Cluster<br/>3 Brokers] --> B[10 Topics]
+        B --> C[~100 Partitions]
+        D[5 Consumer Groups] --> B
+        E[3 Producer Apps] --> B
+        F[3 Consumer Apps] --> D
+    end
+    
+    style A fill:#e1f5fe
+    style D fill:#e8f5e9
+    style E fill:#fce4ec
+```
 
-This complete example demonstrates how all components work together to provide comprehensive Kafka monitoring through the Entity Platform.
+### Entity Creation Summary
+
+<table>
+<tr>
+<td width="33%">
+
+**Infrastructure Entities**
+- 1 Cluster entity
+- 3 Broker entities
+- 10 Topic entities
+- ~100 Partition entities
+- 5 Consumer Group entities
+
+**Total**: 119 entities
+
+</td>
+<td width="33%">
+
+**Application Entities**
+- 3 Producer entities
+- 3 Consumer entities
+- (from APM spans)
+
+**Total**: 6 entities
+
+</td>
+<td width="33%">
+
+**Relationships**
+- 13 CONTAINS
+- ~100 HOSTS
+- 15 CONSUMES_FROM
+- 8 PRODUCES_TO
+
+**Total**: ~136 relationships
+
+</td>
+</tr>
+</table>
+
+### Monitoring Dashboard View
+
+<div style="background-color: #f5f5f5; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
+**📊 Key Metrics Dashboard**
+
+```
+┌─────────────────────────┬─────────────────────────┬─────────────────────────┐
+│ Cluster Health: 🟢      │ Total Throughput        │ Active Connections      │
+│ Controllers: 1          │ In: 50K msg/s           │ Producers: 3            │
+│ Offline Parts: 0        │ Out: 48K msg/s          │ Consumers: 15           │
+└─────────────────────────┴─────────────────────────┴─────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ Broker Performance                                                           │
+│ Broker-1: CPU 45% | Disk 60% | 34 partitions | 🟢                          │
+│ Broker-2: CPU 50% | Disk 65% | 33 partitions | 🟢                          │
+│ Broker-3: CPU 48% | Disk 62% | 33 partitions | 🟢                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ Consumer Lag Overview                                                        │
+│ payment-processor:  Total: 5,000  | Max: 800   | Trend: Stable             │
+│ order-processor:    Total: 3,000  | Max: 500   | Trend: Decreasing        │
+│ analytics-consumer: Total: 50,000 | Max: 10,000| Trend: Increasing ⚠️      │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+</div>
+
+### Incident Response Flow
+
+#### 🚨 When Broker 2 Fails
+
+```mermaid
+sequenceDiagram
+    participant B2 as Broker 2
+    participant EP as Entity Platform
+    participant D as Dashboard
+    participant A as Alerts
+    participant SM as Service Map
+    
+    B2->>EP: Stops sending metrics
+    EP->>EP: Broker entity health → Critical
+    EP->>EP: Cluster offline partitions → 10
+    EP->>D: Update dashboard status
+    EP->>A: Trigger health alerts
+    EP->>SM: Show impacted relationships
+    
+    Note over D: Shows red indicators
+    Note over A: PagerDuty notification
+    Note over SM: Highlights affected apps
+```
+
+### Impact Analysis
+
+<div style="background-color: #ffebee; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
+**🔍 Automated Impact Discovery**
+
+1. **Cluster Status**: Critical (10 offline partitions)
+2. **Affected Topics**: payment-events, order-events (partially offline)
+3. **Impacted Apps**: payment-service, order-service (producers)
+4. **Consumer Impact**: payment-processor lag increasing
+5. **Business Impact**: Payment processing delays
+
+</div>
+
+### Resolution Tracking
+
+```
+Timeline:
+00:00 - Broker 2 fails
+00:01 - Entities update, alerts fire
+00:05 - Ops team notified
+00:15 - Broker 2 restarted
+00:16 - Partitions rebalancing
+00:20 - All partitions online
+00:25 - Consumer lag recovering
+00:30 - System fully healthy
+```
 
 ---
 
-*This visual guide complements the main wiki with practical examples and real-world scenarios.*
+## 🎯 Key Takeaways
+
+<div style="background-color: #e3f2fd; border-radius: 8px; padding: 20px; margin: 20px 0;">
+
+### What These Examples Demonstrate
+
+1. **Entity Creation**: Raw events → Smart entities with context
+2. **Multi-Provider Support**: Unified monitoring across platforms
+3. **Relationship Discovery**: Automatic connection mapping
+4. **Health Calculations**: Intelligent status determination
+5. **Lag Tracking**: Proactive consumer monitoring
+6. **Dashboard Power**: Visual insights and drill-downs
+7. **TTL Management**: Automatic lifecycle handling
+8. **Error Resilience**: Graceful handling of edge cases
+9. **Query Patterns**: Powerful analysis capabilities
+10. **Complete Observability**: Full-stack Kafka monitoring
+
+</div>
+
+---
+
+<div align="center">
+
+### 📚 Continue Learning
+
+[⬅️ Back to Main Guide](KAFKA_ENTITY_DEFINITIONS_COMPLETE_WIKI.md) • [📋 View PR](PR_TO_BE_VERIFIED.md) • [🏠 Repository Home](/)
+
+---
+
+*These examples demonstrate real-world Kafka monitoring scenarios using the Entity Platform*
+
+</div>
