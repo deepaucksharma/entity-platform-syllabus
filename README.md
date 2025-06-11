@@ -7,6 +7,10 @@ This repository contains comprehensive documentation for validating the Kafka En
 ### Core Documentation
 - **[KAFKA_ENTITY_DEFINITIONS_COMPLETE_WIKI.md](KAFKA_ENTITY_DEFINITIONS_COMPLETE_WIKI.md)** - Comprehensive guide with visual navigation and technical deep-dives
 - **[KAFKA_ENTITY_VISUAL_EXAMPLES_AND_WALKTHROUGHS.md](KAFKA_ENTITY_VISUAL_EXAMPLES_AND_WALKTHROUGHS.md)** - 10 practical scenarios with visual flows and code examples
+- **[KAFKA_ENTITY_FUNDAMENTALS.md](KAFKA_ENTITY_FUNDAMENTALS.md)** - Core concepts and principles of Kafka entities
+- **[KAFKA_ENTITY_IMPLEMENTATION.md](KAFKA_ENTITY_IMPLEMENTATION.md)** - Implementation guides and best practices
+- **[KAFKA_ENTITY_OPERATIONS.md](KAFKA_ENTITY_OPERATIONS.md)** - Operational procedures and maintenance
+- **[KAFKA_ENTITY_ADVANCED.md](KAFKA_ENTITY_ADVANCED.md)** - Advanced patterns and enterprise concepts
 
 ### Review Documentation
 - **[KAFKA_ENTITY_PR_REVIEW.md](KAFKA_ENTITY_PR_REVIEW.md)** - Complete review against 30 core repositories
