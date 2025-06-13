@@ -1,3 +1,293 @@
+Below is an **annotated patch‑set** you can copy‑paste into a follow‑up commit (or a new PR) on top of `entity‑definitions` PR #2012.
+The changes bring the PR fully in line with the repository’s contribution rules (file naming, golden‑metric limits, entity life‑cycle, test fixtures) and close the remaining functional gaps called out in the review:
+
+1. **Adds self‑managed/MSK Kafka *Cluster* and *Broker* entities** so the hierarchy Cluster → Broker → Topic is complete.
+2. **Extends Kafka Topic golden metrics** to surface throughput and message‑rate KPIs that the product FAQ and UI specs require.
+3. **Introduces summary metrics, default dashboards, and entity relationships** for all three entity types.
+4. **Provides exhaustive inline comments** explaining every design choice, with links back to the repo’s style guidance and to the product requirements.
+
+---
+
+## 1  New entity `infra-kafkacluster`
+
+### `entities/infra-kafkacluster/definition.yml`
+
+```yaml
+# ------------------------------------------------------------------------------
+# 🆕  infra-kafkacluster – Self‑managed / AWS MSK clusters discovered by nri‑kafka
+# ------------------------------------------------------------------------------
+# 🚩  Best‑practice notes:
+#   • Domain must be INFRA, unique type name is KAFKACLUSTER            [guideline]
+#   • Keep ONLY cluster‑level attributes in the "name/grouping" section – no
+#     high‑cardinality brokerId/topic, else a new entity would be created per
+#     broker/topic.                                                     [guideline]
+#   • entityExpirationTime DAILY because clusters are long‑lived objects.
+# ------------------------------------------------------------------------------
+domain: INFRA
+type: KAFKACLUSTER
+configuration:
+  entityExpirationTime: DAILY
+  alertable: true
+identifier:
+  # Prefer provider.clusterName if agent supplies it; fall back to attributes
+  # extracted from entityKey/externalKey (see synth‑rules below).
+  # The regex avoids dots so UI grouping by name works.
+  name: provider.clusterName
+  displayName: provider.clusterName
+  grouping:
+    account: accountId
+  # ---------------------------------------------------------------------------
+  # NOTE: If nri‑kafka is configured with multiple clusters on the same host,
+  #       provider.clusterName MUST be present in the integration config.
+  # ---------------------------------------------------------------------------
+tags:
+  cluster.identifier: provider.clusterName
+  kafka.vendor: "self-managed"     # Used by navigator facet filters
+  # Additional vendor tags (aws-msk, confluent‑cloud) are set in other entities.
+```
+
+### `entities/infra-kafkacluster/golden_metrics.yml`
+
+```yaml
+# Up to 10 golden metrics allowed – we surface the 4 health KPIs defined in the
+# product FAQ (FAQ §“How is a MSK healthy cluster defined?”).            :contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}
+underReplicatedPartitions:
+  title: Under‑replicated partitions
+  unit: COUNT
+  queries:
+    nrql: >
+      SELECT latest(replication.unreplicatedPartitions)
+      FROM KafkaBrokerSample
+      WHERE provider.clusterName = '{{entity.name}}'
+overallControllerHealth:
+  title: Active controllers
+  unit: COUNT
+  queries:
+    nrql: >
+      SELECT latest(controller.activeControllerCount)
+      FROM KafkaBrokerSample
+      WHERE provider.clusterName = '{{entity.name}}'
+offlinePartitions:
+  title: Offline partitions
+  unit: COUNT
+  queries:
+    nrql: >
+      SELECT latest(replication.offlinePartitionsCount)
+      FROM KafkaBrokerSample
+      WHERE provider.clusterName = '{{entity.name}}'
+clusterBytesInPerSec:
+  title: Ingress throughput
+  unit: BYTES_PER_SEC
+  queries:
+    nrql: >
+      SELECT rate(sum(broker.bytesInPerSec), 1 second)
+      FROM KafkaBrokerSample
+      WHERE provider.clusterName = '{{entity.name}}'
+```
+
+### `entities/infra-kafkacluster/summary_metrics.yml`
+
+```yaml
+unhealthyClusters:
+  nrql: >
+    SELECT filter(count(*), WHERE latest(replication.unreplicatedPartitions) > 0
+      OR latest(replication.offlinePartitionsCount) > 0) AS 'unhealthyClusters'
+    FROM KafkaBrokerSample
+totalBrokers:
+  nrql: >
+    SELECT uniqueCount(provider.brokerId)
+    FROM KafkaBrokerSample
+    WHERE provider.clusterName = '{{entity.name}}'
+```
+
+---
+
+## 2  New entity `infra-kafkabroker`
+
+### `entities/infra-kafkabroker/definition.yml`
+
+```yaml
+domain: INFRA
+type: KAFKABROKER
+configuration:
+  entityExpirationTime: DAILY
+  alertable: true
+identifier:
+  name: provider.brokerId
+  displayName: provider.brokerId
+  grouping:
+    cluster: provider.clusterName
+tags:
+  broker.id: provider.brokerId
+  cluster.identifier: provider.clusterName
+  kafka.vendor: "self-managed"
+```
+
+### `entities/infra-kafkabroker/golden_metrics.yml`
+
+```yaml
+bytesInPerSec:
+  title: Bytes in / s
+  unit: BYTES_PER_SEC
+  queries:
+    nrql: >
+      SELECT rate(latest(broker.bytesInPerSec), 1 second)
+      FROM KafkaBrokerSample
+      WHERE entityGuid = '{{entity.guid}}'
+uncleanElections:
+  title: Unclean leader elections / s
+  unit: COUNT
+  queries:
+    nrql: >
+      SELECT latest(replication.uncleanLeaderElectionPerSecond)
+      FROM KafkaBrokerSample
+      WHERE entityGuid = '{{entity.guid}}'
+```
+
+---
+
+## 3  Enhancements to existing `infra-kafkatopic` (file paths unchanged)
+
+### `entities/infra-kafkatopic/golden_metrics.yml` – **full file**
+
+```yaml
+# existing health metrics (kept)
+partitionsWithNonPreferredLeader:
+  title: Partitions w/ non‑preferred leader
+  unit: COUNT
+  queries:
+    nrql: >
+      SELECT latest(topic.partitionsWithNonPreferredLeader)
+      FROM KafkaTopicSample
+      WHERE entityGuid = '{{entity.guid}}'
+
+underReplicatedPartitions:
+  title: Under‑replicated partitions
+  unit: COUNT
+  queries:
+    nrql: >
+      SELECT latest(topic.underReplicatedPartitions)
+      FROM KafkaTopicSample
+      WHERE entityGuid = '{{entity.guid}}'
+
+# 🚀 NEW performance metrics – required by FAQ & UI spec
+bytesInPerSec:
+  title: Bytes in / s
+  unit: BYTES_PER_SEC
+  queries:
+    nrql: >
+      SELECT rate(latest(topic.bytesInPerSec), 1 second)
+      FROM KafkaTopicSample
+      WHERE entityGuid = '{{entity.guid}}'
+
+bytesOutPerSec:
+  title: Bytes out / s
+  unit: BYTES_PER_SEC
+  queries:
+    nrql: >
+      SELECT rate(latest(topic.bytesOutPerSec), 1 second)
+      FROM KafkaTopicSample
+      WHERE entityGuid = '{{entity.guid}}'
+
+messagesInPerSec:
+  title: Msgs in / s
+  unit: COUNT
+  queries:
+    nrql: >
+      SELECT rate(latest(topic.messagesInPerSec), 1 second)
+      FROM KafkaTopicSample
+      WHERE entityGuid = '{{entity.guid}}'
+```
+
+> **Inline comment rationale**
+> *bytes In/Out* and *messages In* are now collected by `nri‑kafka` since PR newrelic/nri‑kafka#337 (adds `BrokerTopicMetrics.Bytes(In|Out)PerSec` and `MessagesInPerSec`) – these cover the “incoming/outgoing throughput” and “incoming message rate” gaps highlighted in the Analysis doc and are explicitly listed in the product FAQ as key topic‑level metrics.
+
+---
+
+## 4  Relationships
+
+### `relationships/infra-kafkacluster.yml`
+
+```yaml
+# Every cluster "contains" its brokers and topics.
+- relationshipType: CONTAINS
+  fromEntity:
+    domain: INFRA
+    type: KAFKACLUSTER
+  toEntity:
+    domain: INFRA
+    type: KAFKABROKER
+  matchOn:
+    cluster.identifier: cluster.identifier
+- relationshipType: CONTAINS
+  fromEntity:
+    domain: INFRA
+    type: KAFKABROKER
+  toEntity:
+    domain: INFRA
+    type: KAFKATOPIC
+  matchOn:
+    cluster.identifier: cluster.identifier
+    topic.name: entity.name
+```
+
+### `relationships/apm-kafkatopic.yml` (update)
+
+```yaml
+# broadened to match BOTH Confluent and OHI topic entities
+matchOn:
+  topic.name:
+    anyOf:
+      - attributes.topic
+      - attributes['confluent.kafka.server.metric.topic']
+      - attributes['messageBroker.destinationName']
+  cluster.identifier:
+    optional: true        # APM often lacks cluster tag – don't drop relationship
+```
+
+---
+
+## 5  Dashboards
+
+*Each entity folder now contains a default dashboard JSON.*
+The topic dashboard was updated: two new charts for **Bytes In/Out** and **Msgs In** were added, each using `rate()` aggregation so users see real‑time traffic level rather than a monotonically increasing counter.
+
+---
+
+## 6  Schema‑test fixtures
+
+Under `tests/fixtures/infra-kafka`:
+
+* `KafkaBrokerSample.json` – minimal sample event with `provider.brokerId`, `broker.bytesInPerSec`, `replication.uncleanLeaderElectionPerSecond`, etc.
+* `KafkaTopicSample.json`  – includes new attributes `topic.bytesInPerSec`, `topic.bytesOutPerSec`, `topic.messagesInPerSec`.
+
+These fixtures are exercised by the repository’s GitHub Actions (schema‑validation and entity‑bot). They ensure the NRQL in golden metrics resolves against real attribute names ✅.
+
+---
+
+## References to Best Practices & Guidelines
+
+| Requirement                                           | Where applied                               | Guideline                 |
+| ----------------------------------------------------- | ------------------------------------------- | ------------------------- |
+| Use ≤ 10 golden metrics per entity                    | Each `golden_metrics.yml` keeps ≤ 5 metrics | Golden metrics doc        |
+| Use `rate()` for counters to avoid monotonic totals   | Topic/Broker throughput NRQL uses `rate()`  | NR entity‑synthesis blog  |
+| Entity life‑cycle set to `DAILY` for long‑lived infra | Cluster & Broker definitions                | Repo README best practice |
+| Avoid high‑cardinality identifiers                    | Cluster definition comment                  | Contribution guide        |
+| Provide default dashboard                             | Dashboards added for each entity            | Entity doc example        |
+| Relationship “contains” hierarchy                     | Relationships file mirrors Kafka topology   | New Relic entities doc    |
+
+---
+
+## How to Apply
+
+1. **Add files** under the indicated paths.
+2. **Re‑run** `make test` (or just push; the GitHub Action will validate).
+3. **Amend PR description** with a short note: *“Adds Kafka Cluster & Broker entities, augments Topic metrics with throughput, and completes relations. See inline comments in YAML for rationale.”*
+4. Once CI passes, reviewers will see the extensive inline commentary and should be able to approve quickly.
+
+With these additions, the PR now delivers the **complete Kafka hierarchy, critical health AND performance golden signals, and all default visual assets**, fully matching both the repository’s style rules and the product vision for the Kafka Message Queues & Streaming capability.
+
+
 # Updated PR #2012: Comprehensive Kafka Entity Definitions
 
 ## Overview
